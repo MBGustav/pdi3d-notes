@@ -3,6 +3,7 @@ import numpy as np
 import itkwidgets
 import os
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 def images_info(list_images):
@@ -104,6 +105,45 @@ def myshow(img, title=None, margin=0.05, dpi=80 ):
     
     if(title):
         plt.title(title)
+
+
+def plot_gabor_3d(kernel):
+    """
+    Plota um filtro de Gabor 3D.
+    :param kernel: O kernel de Gabor 3D (numpy array).
+    """
+    # Coordenadas para plotar
+    size = kernel.shape[0]
+    x, y, z = np.meshgrid(
+        np.arange(-size // 2 + 1, size // 2 + 1),
+        np.arange(-size // 2 + 1, size // 2 + 1),
+        np.arange(-size // 2 + 1, size // 2 + 1),
+        indexing="ij"
+    )
+
+    # Cria uma figura 3D
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    
+
+    # Normaliza os valores do kernel para a faixa [0, 1]
+    kernel_norm = (kernel - np.min(kernel)) / (np.max(kernel) - np.min(kernel))
+
+    # Define um limiar para exibir isosuperfícies
+    threshold = 0.6  # Ajuste para visualizar diferentes níveis do filtro
+    mask = kernel_norm > threshold
+
+    # Plota os pontos do filtro onde os valores superam o limiar
+    ax.scatter(x[mask], y[mask], z[mask], c=kernel_norm[mask], cmap='viridis', s=10)
+
+    # Configurações de eixos
+    ax.set_title("Filtro de Gabor 3D", fontsize=16)
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+    ax.view_init(elev=20, azim=45)  # Ajusta o ângulo de visualização
+
+    plt.show()
 
 
 def myshow3d(img, xslices=[], yslices=[], zslices=[], title=None, margin=0.05, dpi=80):
