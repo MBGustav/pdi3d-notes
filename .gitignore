@@ -1,1 +1,3 @@
-*/env_pdi/*
+**/env_pdi/**
+**/__pycache__/**
+env_pdi/** 
